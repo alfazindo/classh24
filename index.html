@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>2024-D Donatur24</title>
+    <!-- Font Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        /* Reset dan dasar */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: radial-gradient(circle at top, #3b0202, #140000 55%, #050000 100%);
+            color: #eee;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px 40px 16px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: 8px;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.4);
+            margin-bottom: 4px;
+        }
+        header h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            color: #ffe3e3;
+            text-shadow: 0 0 8px rgba(255, 150, 150, 0.8);
+        }
+
+        /* HERO FOTO */
+        .hero-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 300px;      /* < bar menu saat portrait */
+            aspect-ratio: 4 / 3;
+            border-radius: 22px;
+            overflow: hidden;
+            margin-top: 18px;
+            margin-bottom: 24px;
+            box-shadow:
+                0 14px 30px rgba(0,0,0,0.75),
+                0 0 18px rgba(200, 40, 40, 0.9);
+        }
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                180deg,
+                rgba(0,0,0,0.15) 0%,
+                rgba(0,0,0,0.45) 40%,
+                rgba(0,0,0,0.8) 100%
+            );
+        }
+        .hero-text {
+            position: absolute;
+            left: 50%;
+            bottom: 14%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: #ffffff;
+            text-shadow: 0 0 15px rgba(0,0,0,0.9);
+        }
+        .hero-text .welcome-main {
+            font-size: 2.1rem;
+            font-weight: 800;
+            letter-spacing: 6px;
+        }
+        .hero-text .welcome-sub {
+            font-size: 0.95rem;
+            margin-top: 4px;
+            letter-spacing: 8px;
+            font-weight: 500;
+        }
+
+        /* Container card */
+        .container {
+            background: linear-gradient(145deg, rgba(40,5,5,0.96), rgba(10,10,10,0.98));
+            border-radius: 26px;
+            padding: 22px 18px 24px 18px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow:
+                0 18px 40px rgba(0,0,0,0.9),
+                0 0 20px rgba(180, 40, 40, 0.75);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .icons-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            margin-top: 14px;
+        }
+        .card {
+            background: radial-gradient(circle at top left, rgba(255,255,255,0.12), rgba(40,0,0,0.94));
+            border-radius: 18px;
+            flex: 1;
+            cursor: pointer;
+            padding: 14px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.85);
+            border: 1px solid rgba(255,255,255,0.18);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 18px rgba(255, 90, 90, 0.95);
+            border-color: rgba(255, 170, 170, 0.95);
+        }
+        .card-icon {
+            width: 1.6rem;
+            height: 1.6rem;
+            display: block;
+            margin: 0 auto;
+        }
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        .card-link {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #ffb6b6;
+            text-decoration: none;
+        }
+        .card-link:hover {
+            text-decoration: underline;
+            color: #ffe1e1;
+        }
+
+        /* Modal utama */
+        #modal {
+            display:none;
+            position:fixed;
+            top: 0; left:0;
+            width:100%; height:100%;
+            background:rgba(0,0,0,0.85);
+            justify-content:center;
+            align-items:center;
+            z-index: 10;
+            padding: 15px;
+        }
+        #modal > div {
+            background:#1a0202;
+            border-radius: 18px;
+            padding: 28px 24px;
+            width: 100%; max-width: 480px;
+            color:#fff;
+            box-shadow: 0 0 20px rgba(255, 120, 120, 0.9);
+            overflow-y: auto;
+            max-height: 80vh;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        #modal button.close-btn {
+            position: absolute;
+            top:15px; right:20px;
+            background: transparent;
+            border:none;
+            color:#ffbbbb;
+            font-size: 2rem;
+            cursor:pointer;
+            font-weight: 700;
+        }
+        #modal button.close-btn:hover {
+            color: #ffe5e5;
+        }
+        #modalContent h3 {
+            margin-bottom: 14px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #ffe5e5;
+        }
+        #modalContent ul {
+            padding-left: 22px;
+            list-style-type: decimal;
+        }
+        #modalContent ul li {
+            margin-bottom: 8px;
+        }
+
+        /* Bar SELENGKAPNYA */
+        .more-bar {
+            margin: 18px auto 0 auto;
+            padding: 8px 20px;
+            border-radius: 999px;
+            background: radial-gradient(circle at top, #ff9b9b, #b02020);
+            box-shadow: 0 0 18px rgba(255, 120, 120, 0.9);
+            width: 60%;
+            max-width: 220px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .more-bar span {
+            font-weight: 600;
+            letter-spacing: 2px;
+            font-size: 0.95rem;
+            color: #2a0000;
+        }
+
+        /* Grid di modal kedua */
+        .sub-grid {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+        .sub-card {
+            background: radial-gradient(circle at top left, rgba(255,255,255,0.10), rgba(30,0,0,0.95));
+            border-radius: 18px;
+            padding: 14px 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,200,200,0.7);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            color: #ffe5e5;
+        }
+        .sub-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        .sub-link {
+            font-size: 0.85rem;
+            text-align: center;
+            color: #ffb6b6;
+        }
+        .sub-sub-menu {
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .sub-sub-item {
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,200,200,0.7);
+            background: rgba(40,0,0,0.9);
+            font-size: 0.8rem;
+            text-align: center;
+            color: #ffe5e5;
+            text-decoration: none;
+            box-shadow: 0 0 8px rgba(0,0,0,0.6);
+        }
+        .sub-sub-item:hover {
+            background: rgba(80,0,0,0.95);
+            box-shadow: 0 0 12px rgba(255,150,150,0.9);
+        }
+
+        /* GALERI FOTO KAMI */
+        .gallery-grid {
+            margin-top: 10px;
+            display: grid;
+            gap: 10px;
+        }
+        .gallery-img {
+            width: 100%;
+            border-radius: 18px;
+            display: block;
+            object-fit: cover;
+            box-shadow: 0 0 12px rgba(0,0,0,0.8);
+        }
+
+        footer {
+            margin-top: 24px;
+            color: #ffc3c3;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 1.5px;
+        }
+
+        /* Portrait: default di atas.
+           Landscape: lebar lebih besar (seperti garis yang kamu gambar). */
+        @media (orientation: landscape) {
+            .hero-wrapper {
+                max-width: 720px;
+                aspect-ratio: 16 / 9;
+            }
+            .container {
+                max-width: 720px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>2024-D</h1>
+        <h2>DONATUR24</h2>
+    </header>
+
+    <!-- FOTO WELCOME -->
+    <div class="hero-wrapper">
+        <img src="24D.jpg" alt="Foto Kelas 2024-D" class="hero-image" />
+        <div class="hero-overlay"></div>
+        <div class="hero-text">
+            <div class="welcome-main">WELCOME</div>
+            <div class="welcome-sub">EVERYONE</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="icons-row">
+            <!-- Akun Instagram -->
+            <div class="card" id="instagram">
+                <svg class="card-icon" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" stroke="#ffffff" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="4" stroke="#ffb6b6" stroke-width="2"/>
+                    <circle cx="17" cy="7" r="1.5" fill="#ffb6b6"/>
+                </svg>
+                <div class="card-title">Akun Instagram</div>
+                <a class="card-link" href="https://www.instagram.com/donatur.dumppp?igsh=OTduYnUyZXE4aTRn" target="_blank" rel="noopener noreferrer">Kunjungi →</a>
+            </div>
+
+            <!-- Anggota Kelas -->
+            <div class="card" id="anggota">
+                <svg class="card-icon" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="8" r="4" stroke="#ffffff" stroke-width="2"/>
+                    <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="#ffb6b6" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <div class="card-title">Anggota Kelas</div>
+                <a class="card-link" href="#" onclick="showAnggota(event)">Lihat →</a>
+            </div>
+        </div>
+
+        <div class="icons-row">
+            <!-- Daftar Matkul -->
+            <div class="card" id="matkul">
+                <svg class="card-icon" viewBox="0 0 24 24" fill="none">
+                    <rect x="4" y="4" width="16" height="16" rx="2" stroke="#ffffff" stroke-width="2"/>
+                    <line x1="8" y1="8" x2="16" y2="8" stroke="#ffb6b6" stroke-width="2"/>
+                    <line x1="8" y1="12" x2="16" y2="12" stroke="#ffb6b6" stroke-width="2"/>
+                    <line x1="8" y1="16" x2="12" y2="16" stroke="#ffb6b6" stroke-width="2"/>
+                </svg>
+                <div class="card-title">Daftar Matkul</div>
+                <a class="card-link" href="#" onclick="showMatkul(event)">Lihat →</a>
+            </div>
+
+            <!-- Tentang Kami -->
+            <div class="card" id="tentang">
+                <svg class="card-icon" viewBox="0 0 24 24" fill="none">
+                    <circle cx="8" cy="8" r="3" stroke="#ffffff" stroke-width="2"/>
+                    <circle cx="16" cy="8" r="3" stroke="#ffb6b6" stroke-width="2"/>
+                    <circle cx="8" cy="16" r="3" stroke="#ffb6b6" stroke-width="2"/>
+                    <circle cx="16" cy="16" r="3" stroke="#ffffff" stroke-width="2"/>
+                </svg>
+                <div class="card-title">Tentang Kami</div>
+                <a class="card-link" href="#" onclick="showTentang(event)">Lihat →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" aria-hidden="true">
+        <div role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+            <button class="close-btn" aria-label="Tutup modal" onclick="closeModal()">&times;</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <footer>www.donaturdumppp24</footer>
+
+    <script>
+        function showAnggota(event) {
+            event.preventDefault();
+            const anggotaList = `
+                <h3 id="modalTitle">Anggota Kelas</h3>
+                <ul>
+                    <li>Siti Samrotul Lulu – 242151111117</li>
+                    <li>Rifka Fauziah – 242151111118</li>
+                    <li>Muhammad Yunus Firdaus – 242151111119</li>
+                    <li>Dini Rodiani – 242151111120</li>
+                    <li>Fahira Putri Adzri Ramadhani – 242151111121</li>
+                    <li>Anisa Nabilah – 242151111122</li>
+                    <li>Febriansyah Pawitno – 242151111123</li>
+                    <li>Selviana Virgy Laurentsia Silitonga – 242151111124</li>
+                    <li>Kalila Balqis – 242151111126</li>
+                    <li>Yassirli M Maulida – 242151111127</li>
+                    <li>Alya Annasya Az Zahra – 242151111128</li>
+                    <li>Rizki Ramdani – 242151111129</li>
+                    <li>Anida Shopwa Raihatul Jannah – 242151111130</li>
+                    <li>Elhadad Nursyahbani – 242151111131</li>
+                    <li>Adam Surya Kusumah – 242151111132</li>
+                    <li>Refa Febrianty Nizar – 242151111133</li>
+                    <li>Eni Nuraeni – 242151111134</li>
+                    <li>Mila – 242151111135</li>
+                    <li>Nimas Muriyaa Himmatul Aliyyah – 242151111136</li>
+                    <li>Hasna Alifah – 242151111137</li>
+                    <li>Ratu Reyzahra Maharrani – 242151111138</li>
+                    <li>Qothruninda Munawaroh – 242151111139</li>
+                    <li>Putri Ekka Agustina – 242151111140</li>
+                    <li>Neng Nabila Septiani – 242151111141</li>
+                    <li>Yanti Nur Hayati – 242151111142</li>
+                    <li>Suci Shofiyyah Sugiyawati – 242151111143</li>
+                    <li>Nabila Ramadhani Yusup – 242151111144</li>
+                    <li>Muhammad Ilmi Fathinah – 242151111145</li>
+                    <li>Alfia Anisa Yasmin – 242151111146</li>
+                    <li>Jajang Paij – 242151111147</li>
+                    <li>Syafarila Firdaus – 242151111148</li>
+                    <li>Salman Patria Juliantara – 242151111149</li>
+                    <li>Alya Nailah Nurhapidza – 242151111150</li>
+                    <li>Salva Aslis Ramadanti – 242151111151</li>
+                </ul>
+            `;
+            openModal(anggotaList);
+        }
+
+        function showMatkul(event) {
+            event.preventDefault();
+            const matkul = `
+                <h3 id="modalTitle">Daftar Matkul</h3>
+                <ul>
+                    <li>Matematika</li>
+                    <li>Fisika</li>
+                    <li>Kimia</li>
+                    <li>Biologi</li>
+                    <li>Bahasa Inggris</li>
+                </ul>
+            `;
+            openModal(matkul);
+        }
+
+        function showTentang(event) {
+            event.preventDefault();
+            const tentang = `
+                <h3 id="modalTitle">Tentang Kami</h3>
+                <p>Donatur24 adalah platform kumpulan data donatur dan dokumentasi kegiatan sosial kelas 2024-D. Kami berkomitmen untuk transparansi dan kolaborasi.</p>
+                <div class="more-bar" onclick="showTentangMore()">
+                    <span>SELENGKAPNYA</span>
+                </div>
+            `;
+            openModal(tentang);
+        }
+
+        /* Modal kedua: Tugas Kami (PPT & Produk Akhir) + Foto Kami */
+        function showTentangMore() {
+            const moreContent = `
+                <h3 id="modalTitle">Selengkapnya</h3>
+                <div class="sub-grid">
+                    <div class="sub-card">
+                        <div class="sub-title">Tugas Kami</div>
+                        <div class="sub-sub-menu">
+                            <a class="sub-sub-item"
+                               href="https://www.canva.com/design/DAG56OwjI0s/Kg0aYWAYJapYNX0Qd1MQ7g/edit?utm_content=DAG56OwjI0s&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"
+                               target="_blank" rel="noopener noreferrer">
+                               PPT
+                            </a>
+                            <a class="sub-sub-item"
+                               href="https://youtu.be/jlMCkWDCALo?si=8N1aSP03mjIA-tJ1"
+                               target="_blank" rel="noopener noreferrer">
+                               PRODUK AKHIR
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sub-card" onclick="showFotoKami()">
+                        <div class="sub-title">Foto Kami</div>
+                        <div class="sub-link">Lihat →</div>
+                    </div>
+                </div>
+            `;
+            openModal(moreContent);
+        }
+
+        /* GALERI FOTO KAMI */
+        function showFotoKami() {
+            const galeri = `
+                <h3 id="modalTitle">Foto Kami</h3>
+                <div class="gallery-grid">
+                    <img src="IMG-20251128-WA0004.jpg" alt="Foto Kelas 2024-D - 1" class="gallery-img" />
+                    <img src="IMG-20251128-WA0012.jpg" alt="Foto Kelas 2024-D - 2" class="gallery-img" />
+                </div>
+            `;
+            openModal(galeri);
+        }
+
+        function openModal(content) {
+            const modal = document.getElementById('modal');
+            document.getElementById('modalContent').innerHTML = content;
+            modal.style.display = 'flex';
+            modal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+        }
+
+        // Tutup modal jika klik area gelap
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if(event.target === modal) {
+                closeModal();
+            }
+        };
+
+        // Tutup modal dengan ESC
+        window.addEventListener('keydown', function(e) {
+            if(e.key === "Escape") {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
